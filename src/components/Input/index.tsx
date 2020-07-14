@@ -1,16 +1,26 @@
-import React, { InputHTMLAttributes, useEffect, useRef } from 'react';
+import React, {
+  InputHTMLAttributes,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
 import { IconBaseProps } from 'react-icons';
 import { useField } from '@unform/core';
 
 import { Container } from './styles';
 
+// Add typagem
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   icon: React.ComponentType<IconBaseProps>;
 }
 
 const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [isFocused, setIsFocused] = useState(false);
+  const [isField, setIsField] = useState(false);
 
   /**
    * useField - é um hook disponível que recebe como parâmetro o nome do campo
@@ -32,10 +42,39 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
     });
   }, [fieldName, registerField]);
 
+  /**  Evitar de criar functions dentro dos components pois elas são recriadas
+   * quando a função principal é chamada
+     Usar o useCallback
+  */
+
+  const handleInputBlur = useCallback(() => {
+    setIsFocused(false);
+
+    /* if (inputRef.current?.value) {
+      setIsField(true);
+    } else {
+      setIsField(false);
+    }
+      OU
+      */
+    setIsField(!!inputRef.current?.value);
+  }, []);
+
+  const handleInputFocus = useCallback(() => {
+    setIsFocused(true);
+  }, []);
+
   return (
-    <Container>
+    <Container isField={isField} isFocused={isFocused}>
       {Icon && <Icon size={20} />}
-      <input defaultValue={defaultValue} ref={inputRef} {...rest} />
+      <input
+        onFocus={handleInputFocus}
+        onBlur={handleInputBlur}
+        // onBlur={() => setIsFocused(false)}
+        defaultValue={defaultValue}
+        ref={inputRef}
+        {...rest}
+      />
     </Container>
   );
 };
