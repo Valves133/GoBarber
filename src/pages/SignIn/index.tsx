@@ -1,18 +1,18 @@
 import React, { useCallback, useRef } from 'react';
-import { FiArrowLeft, FiMail, FiUser, FiLock } from 'react-icons/fi';
-// É uma interface que possue todas as typagens de current em useRef
-import { FormHandles } from '@unform/core';
+import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
+import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 import { Container, Content, Background } from './styles';
+
+import getValidationErrors from '../../utils/getValidationErrors';
 
 import logoImg from '../../assets/logo.svg';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import getValidationErrors from '../../utils/getValidationErrors';
 
-const SignUp: React.FC = () => {
+const SignIn: React.FC = () => {
   /* Váriavel para referencial nosso FORM do Unform, se estivessemos
    fazendo manual poderiamos criar um atributo error direto no form.
    Retornar tudo dentro de 'current' no objeto
@@ -27,14 +27,10 @@ const SignUp: React.FC = () => {
 
       // Validação com YUP
       const schema = Yup.object().shape({
-        name: Yup.string().required('Nome é obrigatório'),
         email: Yup.string()
-          .required('E-mail é obrigatório')
+          .required('E-mail incorreto')
           .email('Digite um e-mail válido'),
-        password: Yup.string().min(
-          6,
-          'Digite uma senha com o mínimo de 6 dígitos',
-        ),
+        password: Yup.string().min(6, 'Senha incorreta'),
       });
       /**
        * Checar validação,
@@ -52,30 +48,22 @@ const SignUp: React.FC = () => {
       formRef.current?.setErrors(errors);
 
       /**
-       * Forma Estática
-       *
-       * formRef.current?.setErrors({
-        name: 'Nome obrigatório',
-      });
-       */
+      * Forma Estática
+      *
+      * formRef.current?.setErrors({
+       name: 'Nome obrigatório',
+     });
+      */
     }
   }, []);
-
   return (
     <Container>
-      <Background />
-
       <Content>
         <img src={logoImg} alt="logo" />
 
-        <Form
-          ref={formRef}
-          // initialData={{ name: 'Diego' }}
-          onSubmit={handleSubmit}
-        >
-          <h1>Faça seu cadastro</h1>
+        <Form ref={formRef} onSubmit={handleSubmit}>
+          <h1>Faça seu logon</h1>
 
-          <Input name="name" icon={FiUser} placeholder="Nome" />
           <Input name="email" icon={FiMail} placeholder="E-mail" />
 
           <Input
@@ -85,16 +73,18 @@ const SignUp: React.FC = () => {
             placeholder="Senha"
           />
 
-          <Button type="submit">Cadastrar</Button>
+          <Button type="submit">Entrar</Button>
+
+          <a href="forgot">Esqueci minha senha</a>
         </Form>
 
-        <a href="login">
-          <FiArrowLeft />
-          Voltar para logon
+        <a href="create">
+          <FiLogIn />
+          Criar conta
         </a>
       </Content>
+      <Background />
     </Container>
   );
 };
-
-export default SignUp;
+export default SignIn;
