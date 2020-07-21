@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import { Container, Content, Background } from './styles';
 
 import getValidationErrors from '../../utils/getValidationErrors';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/AuthContext';
 
 import logoImg from '../../assets/logo.svg';
 
@@ -59,19 +59,19 @@ const SignIn: React.FC = () => {
           password: data.password,
         });
       } catch (err) {
-        console.log(err);
-
-        const errors = getValidationErrors(err);
-        // Forma dinâmica
-        formRef.current?.setErrors(errors);
-
-        /**
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+          // Forma dinâmica
+          formRef.current?.setErrors(errors);
+          /**
       * Forma Estática
       *
       * formRef.current?.setErrors({
        name: 'Nome obrigatório',
      });
       */
+        }
+        // disparar um toast
       }
     },
     [signIn],
