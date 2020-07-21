@@ -28,7 +28,9 @@ const SignIn: React.FC = () => {
    * Opção inicial
    * const { signIn } = useContext(AuthContext);
    */
-  const { signIn } = useAuth();
+  const { user, signIn } = useAuth();
+
+  console.log(user);
 
   const handleSubmit = useCallback(
     // async (data: object) => {
