@@ -6,12 +6,13 @@ import * as Yup from 'yup';
 import { Container, Content, Background } from './styles';
 
 import getValidationErrors from '../../utils/getValidationErrors';
-import { useAuth } from '../../hooks/AuthContext';
+import { useAuth } from '../../hooks/auth';
 
 import logoImg from '../../assets/logo.svg';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import { useToast } from '../../hooks/toast';
 
 interface SignInFormData {
   email: string;
@@ -29,6 +30,7 @@ const SignIn: React.FC = () => {
    * const { signIn } = useContext(AuthContext);
    */
   const { user, signIn } = useAuth();
+  const { addToast } = useToast();
 
   console.log(user);
 
@@ -54,7 +56,7 @@ const SignIn: React.FC = () => {
         await schema.validate(data, {
           abortEarly: false,
         });
-        signIn({
+        await signIn({
           email: data.email,
           password: data.password,
         });
@@ -72,9 +74,10 @@ const SignIn: React.FC = () => {
       */
         }
         // disparar um toast
+        addToast();
       }
     },
-    [signIn],
+    [signIn, addToast],
   );
   return (
     <Container>
